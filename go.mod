@@ -3,8 +3,12 @@ module goTinyUrl
 go 1.17
 
 require (
+	github.com/gin-gonic/gin v1.8.1
+	github.com/itchyny/base58-go v0.2.0
+)
+
+require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.0 // indirect
