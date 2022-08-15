@@ -8,17 +8,18 @@ import (
 func TestGenerateShortLink(t *testing.T) {
 	type args struct {
 		longUrl string
+		uuId    string
 	}
 	tests := []struct {
 		name string
 		args args
 		want string
 	}{
-		{"t1", args{"https://github.com/CPyeah/goTinyUrl"}, "fFsuTDHg"},
+		{"t1", args{"https://github.com/CPyeah/goTinyUrl", "11212"}, "G5G2hkvi"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateShortLink(tt.args.longUrl); got != tt.want {
+			if got := GenerateShortLink(tt.args.longUrl, tt.args.uuId); got != tt.want {
 				t.Errorf("GenerateShortLink() = %v, want %v", got, tt.want)
 			}
 		})
