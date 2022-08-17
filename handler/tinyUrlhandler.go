@@ -17,8 +17,18 @@ func CreateShortUrl(c *gin.Context) {
 	}
 
 	shortUrl := shortener.GenerateShortLink(creationRequest.LongUrl, uuid.New().String())
-	err := store.Save(creationRequest.LongUrl, shortUrl, c.ClientIP())
-	if err != nil {
+	err, ok := store.Save(creationRequest.LongUrl, shortUrl, c.ClientIP())
+
+	if !ok {
+		shortUrl = shortener.GenerateShortLink(creationRequest.LongUrl, uuid.New().String())
+		err, ok = store.Save(creationRequest.LongUrl, shortUrl, c.ClientIP())
+		if !ok {
+			shortUrl = shortener.GenerateShortLink(creationRequest.LongUrl, uuid.New().String())
+			err, ok = store.Save(creationRequest.LongUrl, shortUrl, c.ClientIP())
+		}
+	}
+
+	if err != nil || !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"errorMessage": "short url created error",
 		})
