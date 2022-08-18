@@ -19,6 +19,6 @@ func TestSave(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	shortUrl := "avRbHRzu"
-	originUrl := Get(shortUrl)
+	originUrl, _ := Get(shortUrl)
 	fmt.Println(originUrl)
 }

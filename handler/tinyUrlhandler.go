@@ -44,10 +44,10 @@ func CreateShortUrl(c *gin.Context) {
 
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
-	originUrl := store.Get(shortUrl)
-	if len(originUrl) == 0 {
+	originUrl, err := store.Get(shortUrl)
+	if len(originUrl) == 0 || err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"errorMessage": "short url created error",
+			"errorMessage": "short url error",
 		})
 		return
 	}

@@ -10,6 +10,7 @@ import (
 func main() {
 	router := gin.Default()
 
+	// get http://localhost:8080/
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Welcome to TinyUrl")
 	})

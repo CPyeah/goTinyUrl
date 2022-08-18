@@ -59,7 +59,7 @@ func Save(longUrl string, shortUrl string, ip string) (error, bool) {
 	return nil, ok
 }
 
-func Get(shortUrl string) string {
+func Get(shortUrl string) (string, error) {
 	// todo  check from bloomFilter
 
 	// todo  find from cache
@@ -68,9 +68,11 @@ func Get(shortUrl string) string {
 	selectCql := "select origin_url from tinyUrl_service.tiny_url where short_url = ?"
 	var originUrl string
 	err := cassandra.Query(selectCql, shortUrl).Scan(&originUrl)
-	simpleHandleErr(err)
+	if err != nil {
+		return "", err
+	}
 
 	// todo  cache result
 
-	return originUrl
+	return originUrl, nil
 }
