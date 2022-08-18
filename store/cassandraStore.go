@@ -17,6 +17,7 @@ func Init() {
 	//cluster.Keyspace = "tinyUrl_service"
 	cluster.Consistency = gocql.Quorum
 	cluster.ProtoVersion = 4
+	cluster.PoolConfig.HostSelectionPolicy = gocql.TokenAwareHostPolicy(gocql.DCAwareRoundRobinPolicy("localDC"))
 	session, err := cluster.CreateSession()
 	cassandra = session
 	simpleHandleErr(err)
