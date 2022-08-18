@@ -45,6 +45,12 @@ func CreateShortUrl(c *gin.Context) {
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
 	originUrl := store.Get(shortUrl)
+	if len(originUrl) == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"errorMessage": "short url created error",
+		})
+		return
+	}
 	go analyst.Analysis(shortUrl, originUrl, c.ClientIP())
 	c.Redirect(302, originUrl)
 }

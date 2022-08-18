@@ -64,9 +64,13 @@ func Get(shortUrl string) string {
 
 	// todo  find from cache
 
-	// todo  get from Cassandra
+	// get from Cassandra
+	selectCql := "select origin_url from tinyUrl_service.tiny_url where short_url = ?"
+	var originUrl string
+	err := cassandra.Query(selectCql, shortUrl).Scan(&originUrl)
+	simpleHandleErr(err)
 
 	// todo  cache result
 
-	return "https://github.com/CPyeah/goTinyUrl"
+	return originUrl
 }

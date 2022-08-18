@@ -16,3 +16,9 @@ func TestSave(t *testing.T) {
 	err, ok := Save("http://www.google.com", shortUrl, "127.0.0.1")
 	fmt.Println(shortUrl, err, ok)
 }
+
+func TestGet(t *testing.T) {
+	shortUrl := "avRbHRzu"
+	originUrl := Get(shortUrl)
+	fmt.Println(originUrl)
+}
