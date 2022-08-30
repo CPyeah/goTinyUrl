@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/gocql/gocql"
+	"goTinyUrl/cache"
 	"log"
 	"time"
 )
@@ -62,17 +63,21 @@ func Save(longUrl string, shortUrl string, ip string) (error, bool) {
 func Get(shortUrl string) (string, error) {
 	// todo  check from bloomFilter
 
+	var originUrl string
 	// todo  find from cache
-
+	originUrl = cache.Get(shortUrl)
+	if len(originUrl) > 0 {
+		return originUrl, nil
+	}
 	// get from Cassandra
 	selectCql := "select origin_url from tinyUrl_service.tiny_url where short_url = ?"
-	var originUrl string
 	err := cassandra.Query(selectCql, shortUrl).Scan(&originUrl)
 	if err != nil {
 		return "", err
 	}
 
 	// todo  cache result
+	cache.Sava(shortUrl, originUrl)
 
 	return originUrl, nil
 }
