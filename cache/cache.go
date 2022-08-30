@@ -10,10 +10,15 @@ import (
 
 var Ctx context.Context
 var Rdb *redis.Client
+var bloomFilter BloomFilter
 
 const cachePrefix = "tinyURL:"
 
 func init() {
+	Init()
+}
+
+func Init() {
 	Ctx = context.Background()
 
 	Rdb = redis.NewClient(&redis.Options{
@@ -29,6 +34,9 @@ func init() {
 		fmt.Println("connect fail")
 		panic(err)
 	}
+
+	bloomFilter = NewRedisBloomFilter(Rdb, "urlBloomFilter", 100000)
+
 }
 
 func Sava(shortUrl string, originUrl string) {
@@ -43,4 +51,19 @@ func Get(shortUrl string) string {
 	}
 	fmt.Println("Cache hit")
 	return result
+}
+
+func Add(shortUrl string) {
+	err := bloomFilter.Put([]byte(shortUrl))
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Exists(shortUrl string) bool {
+	contain, err := bloomFilter.MightContain([]byte(shortUrl))
+	if err != nil {
+		panic(err)
+	}
+	return contain
 }

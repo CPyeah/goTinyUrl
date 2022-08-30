@@ -1,6 +1,7 @@
 package store
 
 import (
+	"errors"
 	"github.com/gocql/gocql"
 	"goTinyUrl/cache"
 	"log"
@@ -55,16 +56,20 @@ func Save(longUrl string, shortUrl string, ip string) (error, bool) {
 		log.Println(err)
 		return err, ok
 	}
-	// todo  add to bloomFilter
+	//add to bloomFilter
+	cache.Add(shortUrl)
 
 	return nil, ok
 }
 
 func Get(shortUrl string) (string, error) {
-	// todo  check from bloomFilter
+	// check from bloomFilter
+	if !cache.Exists(shortUrl) {
+		return "", errors.New(shortUrl + " not exists")
+	}
 
 	var originUrl string
-	// todo  find from cache
+	// find from cache
 	originUrl = cache.Get(shortUrl)
 	if len(originUrl) > 0 {
 		return originUrl, nil
@@ -76,7 +81,7 @@ func Get(shortUrl string) (string, error) {
 		return "", err
 	}
 
-	// todo  cache result
+	// cache result
 	cache.Sava(shortUrl, originUrl)
 
 	return originUrl, nil
